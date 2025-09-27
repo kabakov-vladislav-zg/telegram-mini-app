@@ -2,6 +2,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { HachiMaruPop_400Regular, useFonts } from '@expo-google-fonts/hachi-maru-pop';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { init, useLaunchParams, useRawInitData } from '@telegram-apps/sdk-react';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
@@ -12,6 +13,11 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     HachiMaruPop_400Regular,
   });
+
+  init();
+  console.log(useLaunchParams())
+  console.log(useLaunchParams(true))
+  console.log(useRawInitData());
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
