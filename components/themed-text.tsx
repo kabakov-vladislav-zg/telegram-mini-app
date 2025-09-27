@@ -21,12 +21,7 @@ export function ThemedText({
     <Text
       style={[
         { color },
-        { fontFamily: 'HachiMaruPop_400Regular' },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
+        styles[type],
         style,
       ]}
       {...rest}
@@ -37,25 +32,28 @@ export function ThemedText({
 const styles = StyleSheet.create({
   default: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 16,
   },
   defaultSemiBold: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 16,
     fontWeight: '600',
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
+    lineHeight: 24,
     fontWeight: 'bold',
-    lineHeight: 32,
+    fontFamily: 'HachiMaruPop_400Regular',
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
+    lineHeight: 18,
     fontWeight: 'bold',
+    fontFamily: 'HachiMaruPop_400Regular',
   },
   link: {
-    lineHeight: 30,
     fontSize: 16,
+    lineHeight: 16,
     color: '#0a7ea4',
   },
 });

@@ -1,11 +1,28 @@
 import { ThemedText } from '@/components/themed-text';
-import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/themed-view';
+import { Link } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 export default function Index() {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>Анкета для друзей</ThemedText>
+      <ThemedText
+        type='title'
+        style={{ textAlign: 'center' }}
+      >
+        Анкета для друзей
+      </ThemedText>
+      <View>
+        <Link href="/classic" asChild>
+          <Pressable>
+            <ThemedText
+              type='subtitle'
+            >
+              Классическая анкета
+            </ThemedText>
+          </Pressable>
+        </Link>
+      </View>
     </ThemedView>
   );
 }
@@ -14,7 +31,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    padding: 12,
+    gap: 24,
   },
 });
