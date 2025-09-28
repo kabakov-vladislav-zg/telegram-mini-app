@@ -9,3 +9,6 @@ WEBHOOK_PATH = os.getenv('WEBHOOK_PATH', '/webhook')
 
 # Порт для сервера
 PORT = int(os.getenv('PORT', 8080))
+
+# ID администратора (для специальных команд)
+ADMIN_USER_ID = int(os.getenv('ADMIN_USER_ID', '0'))
