@@ -14,11 +14,6 @@ export default function RootLayout() {
     HachiMaruPop_400Regular,
   });
 
-  init();
-  console.log(useLaunchParams())
-  console.log(useLaunchParams(true))
-  console.log(useRawInitData());
-
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
