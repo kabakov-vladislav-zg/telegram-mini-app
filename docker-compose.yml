@@ -10,8 +10,10 @@ services:
     container_name: tma-app
     build: ./tma
     ports:
-      - "80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       NODE_ENV: production
     restart: unless-stopped
-
