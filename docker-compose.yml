@@ -10,9 +10,5 @@ services:
   tma:
     container_name: tma-app
     build: ./tma
-    ports:
-      - 80:80
-    environment:
-      NODE_ENV: production
     restart: unless-stopped
 
