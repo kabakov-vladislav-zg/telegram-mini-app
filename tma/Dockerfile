@@ -1,22 +1,32 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
+# Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
-# Копирование package.json и установка зависимостей
+# Копируем package.json и package-lock.json
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Копирование исходного кода
+# Устанавливаем зависимости
+RUN npm ic
+
+# Копируем весь код приложения в контейнер
 COPY . .
 
-# Сборка приложения
-RUN npm run build
+# Собираем статический сайт для продакшена
+RUN npm run build:web
 
-# Установка сервера для статических файлов
-RUN npm install -g serve
+# --- Этап 2: Развертывание с помощью Nginx ---
+# Используем легковесный образ Nginx
+FROM nginx:stable-alpine
 
-# Экспорт порта
-EXPOSE 3000
+# Копируем статические файлы из этапа сборки (из каталога /app/dist) в директорию Nginx для статики
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Запуск приложения
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Копируем кастомный файл конфигурации Nginx (опционально, если требуется)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Открываем порт, который слушает Nginx (по умолчанию 80)
+EXPOSE 80
+
+# Запускаем Nginx
+CMD ["nginx", "-g", "daemon off;"]

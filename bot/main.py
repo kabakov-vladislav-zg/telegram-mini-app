@@ -1,18 +1,9 @@
-import os
-import logging
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
-from config import BOT_TOKEN
-
-# Настройка логирования
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+import os
 
 # Создание экземпляра бота
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
 
 # Создание клавиатуры
 def create_main_keyboard():
@@ -36,7 +27,6 @@ def handle_start(message):
         welcome_text,
         reply_markup=create_main_keyboard()
     )
-    logger.info(f"Новый пользователь: {user.first_name} (ID: {user.id})")
 
 # Обработчик команды /help
 @bot.message_handler(commands=['help'])
@@ -105,8 +95,6 @@ def handle_text(message):
         reply_markup=create_main_keyboard()
     )
     
-    logger.info(f"Пользователь {message.from_user.id} отправил: {user_text}")
-
 # Обработчик всех остальных типов сообщений
 @bot.message_handler(content_types=['photo', 'document', 'sticker', 'voice'])
 def handle_other_messages(message):
@@ -116,57 +104,12 @@ def handle_other_messages(message):
         reply_markup=create_main_keyboard()
     )
 
-# Вебхук обработчики (если используется вебхук)
-@bot.message_handler(commands=['set_webhook'])
-def set_webhook(message):
-    if message.from_user.id != YOUR_ADMIN_USER_ID:  # Замените на ваш ID
-        bot.reply_to(message, "У вас нет прав для этой команды.")
-        return
-    
-    from config import WEBHOOK_URL, WEBHOOK_PATH
-    if WEBHOOK_URL:
-        bot.set_webhook(url=f"{WEBHOOK_URL}{WEBHOOK_PATH}")
-        bot.reply_to(message, f"Вебхук установлен: {WEBHOOK_URL}{WEBHOOK_PATH}")
-    else:
-        bot.reply_to(message, "WEBHOOK_URL не настроен в конфигурации")
-
-@bot.message_handler(commands=['remove_webhook'])
-def remove_webhook(message):
-    if message.from_user.id != YOUR_ADMIN_USER_ID:  # Замените на ваш ID
-        bot.reply_to(message, "У вас нет прав для этой команды.")
-        return
-    
-    bot.remove_webhook()
-    bot.reply_to(message, "Вебхук удален, используется polling")
-
-# Функция для запуска через вебхук
-def run_webhook():
-    from config import WEBHOOK_URL, WEBHOOK_PATH, PORT
-    if WEBHOOK_URL:
-        bot.remove_webhook()
-        bot.set_webhook(url=f"{WEBHOOK_URL}{WEBHOOK_PATH}")
-        logger.info(f"Вебхук установлен: {WEBHOOK_URL}{WEBHOOK_PATH}")
-    else:
-        logger.info("WEBHOOK_URL не настроен, используется polling")
-
 # Основная функция запуска
 def main():
-    try:
-        logger.info("Запуск бота...")
-        
-        # Проверяем, используем ли мы вебхук или polling
-        from config import WEBHOOK_URL, PORT
-        
-        if WEBHOOK_URL:
-            # Для вебхука нужен сервер (например, Flask)
-            run_webhook()
-        else:
-            # Запускаем polling
-            logger.info("Используется polling режим")
-            bot.infinity_polling(timeout=60, long_polling_timeout=60)
+    try:                
+        bot.infinity_polling(timeout=60, long_polling_timeout=60)
             
     except Exception as e:
-        logger.error(f"Ошибка при запуске бота: {e}")
         raise
 
 if __name__ == '__main__':
