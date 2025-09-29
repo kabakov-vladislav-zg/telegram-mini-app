@@ -4,10 +4,15 @@ services:
     container_name: telegram-bot
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - PORT=8080
     restart: unless-stopped
 
   tma:
     container_name: tma-app
     build: ./tma
+    ports:
+      - 80:80
+    environment:
+      NODE_ENV: production
     restart: unless-stopped
 
