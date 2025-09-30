@@ -7,6 +7,7 @@
 
 FROM alpine/git as build
 WORKDIR /app
+ARG CACHE_BUST=1
 RUN git clone --depth 1 -b gh-pages https://github.com/kabakov-vladislav-zg/telegram-mini-app.git
 
 FROM nginx:stable-alpine
