@@ -12,13 +12,8 @@ let initialState: object = {}
 try {
   init();
   const launchParams = retrieveLaunchParams(true);
-  const user = JSON.parse(launchParams?.user as string);
-  const chat = JSON.parse(launchParams?.chat as string);
-  initialState = {
-    ...launchParams,
-    user,
-    chat,
-  }
+  const ownerdata = JSON.parse(atob(launchParams?.ownerdata as string));
+  initialState = { ...launchParams, ownerdata }
   console.log('LaunchParams:\n', launchParams)
   console.log('Data from bot:\n', initialState)
   console.log('RawLaunchParams:\n', retrieveRawLaunchParams())

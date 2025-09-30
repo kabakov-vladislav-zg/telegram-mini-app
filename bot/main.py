@@ -1,7 +1,8 @@
 import telebot
 from telebot.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 import os
-from urllib.parse import urlencode
+import json
+import base64
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
@@ -61,7 +62,7 @@ def handle_hello(message):
       'chat': chat,
       'user': user,
     }
-    url = f"{app_url}?{urlencode(params, doseq=True)}"
+    url = f"{app_url}?ownerdata={base64.b64encode(json.dumps(params).encode()).decode()}"
 
     keyboard = [[InlineKeyboardButton(
       "Анкета",
