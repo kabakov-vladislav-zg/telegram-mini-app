@@ -7,7 +7,7 @@
 
 FROM alpine/git as build
 WORKDIR /app
-RUN git clone -b gh-pages https://github.com/kabakov-vladislav-zg/telegram-mini-app.git
+RUN git clone --depth 1 -b gh-pages https://github.com/kabakov-vladislav-zg/telegram-mini-app.git
 
 FROM nginx:stable-alpine
 RUN rm -rf /usr/share/nginx/html && mkdir -p /usr/share/nginx/html
