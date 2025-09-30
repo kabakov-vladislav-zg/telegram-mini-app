@@ -1,5 +1,6 @@
 import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import store from '@/redux/store';
 import { HachiMaruPop_400Regular, useFonts } from '@expo-google-fonts/hachi-maru-pop';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
@@ -7,7 +8,6 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
-import store from '@/redux/store'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

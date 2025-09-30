@@ -54,10 +54,9 @@ def handle_hello(message):
     app_url = "https://vladiksfriendsprofilebot.webtm.ru"
     user = message.from_user
     chat = message.chat
-    text = f"""
-      👋 Привет
-      Заполни анкету друга для {user.first_name}
-    """
+    text = f"""👋 Привет
+Заполни анкету друга для {user.first_name}
+"""
     params = {
       'chat': chat,
       'user': user,
