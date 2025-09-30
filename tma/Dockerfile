@@ -1,7 +1,7 @@
 FROM node:alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --only=production --silent --no-optional --no-audit --no-fund
 COPY . .
 RUN npm run build:web
 
