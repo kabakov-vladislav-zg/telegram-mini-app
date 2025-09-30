@@ -58,22 +58,18 @@ def handle_hello(message):
 Заполни анкету друга для {user.first_name}
 """
     params = {
-      'chat': {
-        'id': chat.id,
-        'type': chat.type,
-        'title': getattr(chat, 'title', None),
-        'username': getattr(chat, 'username', None),
-        'first_name': getattr(chat, 'first_name', None),
-        'last_name': getattr(chat, 'last_name', None)
-      },
-      'user': {
-        'id': user.id,
-        'is_bot': user.is_bot,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'username': user.username,
-        'language_code': user.language_code
-      },
+      'chatId': chat.id,
+      'chatType': chat.type,
+      'chatTitle': getattr(chat, 'title', None),
+      'chatUsername': getattr(chat, 'username', None),
+      'chatFirstName': getattr(chat, 'first_name', None),
+      'chatLastName': getattr(chat, 'last_name', None),
+      'id': user.id,
+      'is_bot': user.is_bot,
+      'first_name': user.first_name,
+      'last_name': user.last_name,
+      'username': user.username,
+      'language_code': user.language_code
     }
     url = f"{app_url}?{urlencode(params, doseq=True)}"
 
