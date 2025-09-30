@@ -2,11 +2,12 @@ import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { HachiMaruPop_400Regular, useFonts } from '@expo-google-fonts/hachi-maru-pop';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { init, useLaunchParams, useRawInitData } from '@telegram-apps/sdk-react';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
+import store from '@/redux/store'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -15,21 +16,23 @@ export default function RootLayout() {
   });
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          {fontsLoaded ? (
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-            </Stack>
-          ) : (
-            <ThemedView style={styles.preloader}>
-              <ActivityIndicator size="large" color="#0000ff" />
-            </ThemedView>
-          )}
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <SafeAreaProvider>
+          <SafeAreaView style={styles.container}>
+            {fontsLoaded ? (
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+            ) : (
+              <ThemedView style={styles.preloader}>
+                <ActivityIndicator size="large" color="#0000ff" />
+              </ThemedView>
+            )}
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }
 

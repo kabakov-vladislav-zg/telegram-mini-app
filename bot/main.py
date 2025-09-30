@@ -1,6 +1,7 @@
 import telebot
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 import os
+from urllib.parse import urlencode
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
@@ -8,8 +9,7 @@ bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
 # Создание клавиатуры
 def create_main_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(KeyboardButton('ℹ️ Помощь'))
-    keyboard.add(KeyboardButton('👋 Привет'), KeyboardButton('🔄 Повтори'))
+    keyboard.add(KeyboardButton('👋 Анкета'), KeyboardButton('ℹ️ Помощь'))
     return keyboard
 
 # Обработчик команды /start
@@ -32,19 +32,14 @@ def handle_start(message):
 @bot.message_handler(commands=['help'])
 def handle_help(message):
     help_text = """
-🤖 *Доступные команды:*
+      🤖 *Доступные команды:*
 
-*/start* - Начать работу
-*/help* - Показать справку
+      */start* - Начать работу
+      */help* - Показать справку
 
-*Кнопки:*
-👋 *Привет* - Поприветствовать
-🔄 *Повтори* - Повторить последнее сообщение
-ℹ️ *Помощь* - Показать эту справку
-
-*Также ты можешь:*
-📝 Отправить любое сообщение - я его повторю
-🕒 Отправить время - покажу текущее время
+      *Кнопки:*
+      👋 *Привет* - Поприветствовать
+      ℹ️ *Помощь* - Показать эту справку
     """
     bot.send_message(
         message.chat.id,
@@ -53,14 +48,32 @@ def handle_help(message):
         reply_markup=create_main_keyboard()
     )
 
-# Обработчик кнопки "Привет"
-@bot.message_handler(func=lambda message: message.text == '👋 Привет')
+# Обработчик кнопки "Анкета"
+@bot.message_handler(func=lambda message: message.text == '👋 Анкета')
 def handle_hello(message):
+    app_url = "https://vladiksfriendsprofilebot.webtm.ru"
     user = message.from_user
+    chat = message.chat
+    text = f"""
+      👋 Привет
+      Заполни анкету друга для {user.first_name}
+    """
+    params = {
+      'chat': chat,
+      'user': user,
+    }
+    url = f"{app_url}?{urlencode(params, doseq=True)}"
+
+    keyboard = [[InlineKeyboardButton(
+      "Анкета",
+      web_app=WebAppInfo(url=url))
+    ]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
     bot.send_message(
-        message.chat.id,
-        f"И тебе привет, {user.first_name}! 😊\nКак твои дела?",
-        reply_markup=create_main_keyboard()
+      chat.id,
+      text,
+      reply_markup=reply_markup
     )
 
 # Обработчик кнопки "Помощь"
@@ -68,32 +81,6 @@ def handle_hello(message):
 def handle_help_button(message):
     handle_help(message)
 
-# Обработчик кнопки "Повтори"
-@bot.message_handler(func=lambda message: message.text == '🔄 Повтори')
-def handle_repeat_last(message):
-    bot.send_message(
-        message.chat.id,
-        "Отправь мне сообщение, и я его повторю! 📝",
-        reply_markup=create_main_keyboard()
-    )
-
-# Обработчик текстовых сообщений
-@bot.message_handler(content_types=['text'])
-def handle_text(message):
-    user_text = message.text
-    
-    # Проверяем, не является ли сообщение командой с клавиатуры
-    if user_text in ['👋 Привет', 'ℹ️ Помощь', '🔄 Повтори']:
-        return  # Эти сообщения уже обрабатываются другими хендлерами
-    
-    response = f"🔁 Ты сказал: *{user_text}*"
-    
-    bot.send_message(
-        message.chat.id,
-        response,
-        parse_mode='Markdown',
-        reply_markup=create_main_keyboard()
-    )
     
 # Обработчик всех остальных типов сообщений
 @bot.message_handler(content_types=['photo', 'document', 'sticker', 'voice'])

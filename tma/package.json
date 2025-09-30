@@ -13,6 +13,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.9.0",
+    "@telegram-apps/bridge": "^2.11.0",
+    "@telegram-apps/sdk": "^3.11.5",
+    "react-redux": "^9.2.0",
     "@expo-google-fonts/hachi-maru-pop": "^0.4.1",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
