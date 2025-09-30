@@ -12,8 +12,7 @@ let initialState: object = {}
 try {
   init();
   const launchParams = retrieveLaunchParams(true);
-  const ownerdata = launchParams?.ownerdata;
-  initialState = { ...launchParams, ownerdata }
+  initialState = launchParams
   console.log('LaunchParams:\n', launchParams)
   console.log('Data from bot:\n', initialState)
   console.log('RawLaunchParams:\n', retrieveRawLaunchParams())
