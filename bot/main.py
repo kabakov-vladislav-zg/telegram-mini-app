@@ -126,9 +126,6 @@ def handle_hello(message):
     app_url = "https://vladiksfriendsprofilebot.webtm.ru"
     user = message.from_user
     chat = message.chat
-    text = f"""👋 Привет
-Заполни анкету друга для {user.first_name}
-"""
     attach_data = {
       'id': user.id,
       'is_bot': user.is_bot,
@@ -139,6 +136,11 @@ def handle_hello(message):
     }
     attach_string = encode_compact(attach_data)
     url = f"{app_url}?startattach={attach_string}"
+    text = (
+      f"👋 Привет"
+      f"Заполни анкету друга для {user.first_name}"
+      f"https://t.me/vladiks_friends_profile_bot?startapp={attach_string}"
+    )
 
     keyboard = [[InlineKeyboardButton(
       "Анкета",
