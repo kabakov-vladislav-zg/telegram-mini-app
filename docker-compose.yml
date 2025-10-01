@@ -1,7 +1,7 @@
 services:
   bot:
     build: ./bot
-    container_name: telegram-bot
+    container_name: bot
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - PYTHONUNBUFFERED=1
@@ -9,7 +9,7 @@ services:
 
   api:
     build: ./api
-    container_name: tma-api
+    container_name: api
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - PYTHONUNBUFFERED=1
@@ -22,13 +22,11 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: tma-nginx
+    container_name: tma
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./frontend:/usr/share/nginx/html:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - api
