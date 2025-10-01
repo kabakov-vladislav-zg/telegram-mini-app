@@ -10,12 +10,6 @@ export default function Index() {
   function onPress() {
     supports('web_app_data_send', '9.1');
     console.log('supports\n', supports('web_app_data_send', '9.1'))
-    window.TelegramWebviewProxy.postEvent('web_app_data_send', {
-      data: JSON.stringify({
-        sender,
-        receiver,
-      }),
-    });
     window.TelegramWebviewProxy.invokeCustomMethod(
       'send_message_to_user',
       {

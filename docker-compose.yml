@@ -1,10 +1,14 @@
+version: '3.8'
+
 services:
   bot:
-    build: ./bot
+    build: .
     container_name: telegram-bot
     environment:
-      - PYTHONUNBUFFERED=1  # Важно!
       - BOT_TOKEN=${BOT_TOKEN}
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "5000:5000"  # Для API
     restart: unless-stopped
 
   tma:

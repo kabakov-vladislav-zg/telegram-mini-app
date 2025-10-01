@@ -1,7 +1,6 @@
 import telebot
 from telebot.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 import os
-from urllib.parse import urlencode
 import json
 import base64
 import logging
@@ -27,13 +26,14 @@ def handle_custom_web_app_data():
   try:
     # Проверяем Content-Type
     if not request.is_json:
-        return jsonify({'error': 'Content-Type must be application/json'}), 400
+      return jsonify({'error': 'Content-Type must be application/json'}), 400
     
     data = request.get_json()
+    print(f"request.get_json(): {request.get_json()}")
     
     # Проверяем обязательные поля
     if not data or 'method' not in data:
-        return jsonify({'error': 'Missing method name'}), 400
+      return jsonify({'error': 'Missing method name'}), 400
     
     method_name = data.get('method')
     method_params = data.get('params', {})
@@ -217,4 +217,10 @@ def main():
         raise
 
 if __name__ == '__main__':
-    main()
+  main()
+
+  app.run(
+    host='0.0.0.0', 
+    port=5000, 
+    debug=True  # Только для разработки!
+  )
