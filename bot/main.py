@@ -50,15 +50,8 @@ def handle_help(message):
         reply_markup=create_main_keyboard()
     )
 
-def encode_compact(data_dict):
-  compact_data = {
-    "u": data_dict.get("uid"),
-    "n": data_dict.get("name"),
-    "c": data_dict.get("ctx", {}),
-    "t": data_dict.get("ts")
-  }
-  
-  json_str = json.dumps(compact_data, separators=(',', ':'))
+def encode_compact(data_dict):  
+  json_str = json.dumps(data_dict, separators=(',', ':'))
   base64_encoded = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
   
   return (
