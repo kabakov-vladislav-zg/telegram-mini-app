@@ -1,9 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import telegramReducer from './telegram';
 
 const store = configureStore({
   reducer: {
-    telegram: telegramReducer,
+
   },
 })
 

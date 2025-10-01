@@ -2,6 +2,8 @@ import telebot
 from telebot.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 import os
 from urllib.parse import urlencode
+import json
+import base64
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
@@ -48,6 +50,24 @@ def handle_help(message):
         reply_markup=create_main_keyboard()
     )
 
+def encode_compact(data_dict):
+  compact_data = {
+    "u": data_dict.get("uid"),
+    "n": data_dict.get("name"),
+    "c": data_dict.get("ctx", {}),
+    "t": data_dict.get("ts")
+  }
+  
+  json_str = json.dumps(compact_data, separators=(',', ':'))
+  base64_encoded = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
+  
+  return (
+    base64_encoded
+    .replace('+', '-')
+    .replace('/', '_')
+    .replace('=', '')
+  )
+
 # Обработчик кнопки "Анкета"
 @bot.message_handler(func=lambda message: message.text == '👋 Анкета')
 def handle_hello(message):
@@ -57,13 +77,7 @@ def handle_hello(message):
     text = f"""👋 Привет
 Заполни анкету друга для {user.first_name}
 """
-    params = {
-      'chatId': chat.id,
-      'chatType': chat.type,
-      'chatTitle': getattr(chat, 'title', None),
-      'chatUsername': getattr(chat, 'username', None),
-      'chatFirstName': getattr(chat, 'first_name', None),
-      'chatLastName': getattr(chat, 'last_name', None),
+    attach_data = {
       'id': user.id,
       'is_bot': user.is_bot,
       'first_name': user.first_name,
@@ -71,7 +85,8 @@ def handle_hello(message):
       'username': user.username,
       'language_code': user.language_code
     }
-    url = f"{app_url}?{urlencode(params, doseq=True)}"
+    attach_string = encode_compact(attach_data)
+    url = f"{app_url}?startattach={attach_string}"
 
     keyboard = [[InlineKeyboardButton(
       "Анкета",
