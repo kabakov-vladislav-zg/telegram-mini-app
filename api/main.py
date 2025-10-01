@@ -14,11 +14,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-@app.route('/', methods=['POST'])
 @app.route('/api/custom_method', methods=['POST'])
-@app.route('/custom_method', methods=['POST'])
-@app.route('/api/customMethod', methods=['POST'])
-@app.route('/api/custom', methods=['POST'])
 def handle_custom_method():
     """Обработчик кастомных методов из TMA"""
     try:

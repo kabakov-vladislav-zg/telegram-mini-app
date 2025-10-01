@@ -1,28 +1,26 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTgUser } from '@/hooks/telegram/use-user';
-import { invokeCustomMethod } from '@telegram-apps/bridge';
+import axios from 'axios';
 import { Button, StyleSheet } from 'react-native';
 
 export default function Index() {
   const { sender, receiver } = useTgUser()
 
-  function onPress() {
-    invokeCustomMethod(
-      'send_message_to_user',
-      {
-        sender,
-        receiver, 
-        message: 'test'
-      },
-      'ABC'
-    ).then((error, result) => {
-      if (error) {
-        alert('Ошибка отправки');
-      } else {
-        alert('Сообщение отправлено!');
-      }
-    });
+  async function onPress() {
+    try {
+      await axios.post('/api/custom_method', {
+        method: 'send_message_to_user',
+        params: {
+          sender,
+          receiver, 
+          message: 'test'
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error:', error.response?.data || error.message);
+      throw error;
+    }
   }
   return (
     <ThemedView style={styles.container}>
