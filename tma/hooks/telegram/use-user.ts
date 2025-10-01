@@ -22,6 +22,11 @@ export function useTgUser() {
   const launchParams = retrieveLaunchParams(true);
   const receiver = launchParams.tgWebAppData!.user!;
   const startattach = launchParams.startattach as string;
-  const sender = decodeBase64Url<TgStartParam>(startattach);
+  const sender = startattach ? decodeBase64Url<TgStartParam>(startattach) : {
+    id: 1,
+    username: 'Pavel_Pavelov',
+    first_name: 'Pavel',
+    last_name: 'Pavelov',
+  };
   return { sender, receiver };
 }

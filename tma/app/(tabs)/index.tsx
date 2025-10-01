@@ -16,6 +16,22 @@ export default function Index() {
         receiver,
       }),
     });
+    window.TelegramWebviewProxy.invokeCustomMethod(
+      'send_message_to_user',
+      {
+        sender,
+        receiver, 
+        message: 'test'
+      },
+      (error, result) => {
+        if (error) {
+          alert('Ошибка отправки');
+        } else {
+          alert('Сообщение отправлено!');
+          window.TelegramWebviewProxy.close();
+        }
+      }
+    );
   }
   return (
     <ThemedView style={styles.container}>
