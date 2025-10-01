@@ -16,6 +16,7 @@ services:
     restart: unless-stopped
 
   nginx:
+    build: ./tma
     image: nginx:alpine
     container_name: tma
     ports:
