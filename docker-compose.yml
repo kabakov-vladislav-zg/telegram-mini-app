@@ -3,6 +3,7 @@ services:
     build: ./bot
     container_name: telegram-bot
     environment:
+      - PYTHONUNBUFFERED=1  # Важно!
       - BOT_TOKEN=${BOT_TOKEN}
     restart: unless-stopped
 
