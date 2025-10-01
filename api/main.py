@@ -45,23 +45,17 @@ def handle_custom_method():
 def send_message_to_user(params):
     """Отправка сообщения через Telegram Bot API"""
     try:
-        to_user = params.get('to_user')
-        message_text = params.get('message')
-        from_user = params.get('from_user', 'Anonymous')
-        
-        logger.info(f"👤 Sending message to: {to_user}")
-        logger.info(f"💬 Message: {message_text}")
-        
-        if not to_user or not message_text:
-            return jsonify({'error': 'Missing to_user or message'}), 400
+        sender = params.get('sender')
+        receiver = params.get('receiver')
+        message = params.get('message')
         
         # Формируем текст сообщения
-        text = f"📨 Сообщение от {from_user}:\n\n{message_text}"
+        text = f"📨 Сообщение от {receiver.username} для {sender.username}:\n\n{message}"
         
         # Отправляем через Telegram Bot API
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         payload = {
-            'chat_id': to_user,
+            'chat_id': sender.id,
             'text': text,
             'parse_mode': 'HTML'
         }
