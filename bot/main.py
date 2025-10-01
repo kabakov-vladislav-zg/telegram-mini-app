@@ -4,6 +4,14 @@ import os
 from urllib.parse import urlencode
 import json
 import base64
+import logging
+import sys
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    stream=sys.stdout
+)
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
@@ -92,7 +100,7 @@ def handle_hello(message):
       text,
       reply_markup=reply_markup
     )
-    
+
 @bot.message_handler(content_types=['text', 'web_app_data', 'document', 'photo'])
 def handle_all_content(message):
     print(f"Received content type: {message.content_type}")
