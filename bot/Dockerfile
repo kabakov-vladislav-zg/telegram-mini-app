@@ -1,8 +1,7 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 WORKDIR /app
 
-# Устанавливаем системные зависимости
 RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -16,5 +15,4 @@ EXPOSE 5000
 
 ENV PYTHONUNBUFFERED=1
 
-# Используем gunicorn для продакшена
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "main:app"]
