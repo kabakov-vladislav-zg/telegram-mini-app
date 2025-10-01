@@ -6,6 +6,7 @@ import base64
 import logging
 import sys
 import requests
+import threading
 from flask import Flask, request, jsonify
 
 logging.basicConfig(
@@ -208,18 +209,29 @@ def handle_other_messages(message):
         reply_markup=create_main_keyboard()
     )
 
-# Основная функция запуска
-def main():
-    try:                
-        bot.infinity_polling(timeout=60, long_polling_timeout=60)
-            
-    except Exception as e:
-        raise
+def start_bot():
+  """Запуск бота в отдельном потоке"""
+  logging.info("Starting Telegram bot...")
+  try:
+    bot.infinity_polling(timeout=60, long_polling_timeout=60)
+  except Exception as e:
+    logging.error(f"Bot polling error: {e}")
 
-if __name__ == '__main__':
+def start_flask():
+  """Запуск Flask приложения"""
+  logging.info("Starting Flask application...")
   app.run(
     host='0.0.0.0', 
     port=5000, 
-    debug=True  # Только для разработки!
+    debug=False,
+    use_reloader=False  # Важно! Иначе будет 2 процесса
   )
-  main()
+
+if __name__ == '__main__':
+    # Запускаем бота в отдельном потоке
+    bot_thread = threading.Thread(target=start_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+    
+    # Запускаем Flask в основном потоке
+    start_flask()
