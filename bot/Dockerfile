@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 9999
 ENV PYTHONUNBUFFERED=1
-CMD ["python", "-u", "bot.py"]
+CMD ["python", "-u", "main.py"]
