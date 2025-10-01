@@ -6,7 +6,6 @@ import base64
 import logging
 import sys
 import requests
-import threading
 from flask import Flask, request, jsonify
 
 logging.basicConfig(
