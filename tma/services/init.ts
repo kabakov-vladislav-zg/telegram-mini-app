@@ -1,5 +1,5 @@
 import { emitEvent, isTMA, mockTelegramEnv } from '@telegram-apps/bridge';
-import { init } from '@telegram-apps/sdk-react';
+import { init } from '@telegram-apps/sdk';
 
 let isAppInitialized = false;
 

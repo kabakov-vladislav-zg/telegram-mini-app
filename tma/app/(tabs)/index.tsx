@@ -1,9 +1,20 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useTgUser } from '@/hooks/telegram/use-user';
+import { postEvent } from '@telegram-apps/bridge';
+import { Button, StyleSheet } from 'react-native';
 
 export default function Index() {
+  const { sender, receiver } = useTgUser()
+
+  function onPress() {
+    postEvent('web_app_data_send', {
+      data: JSON.stringify({
+        sender,
+        receiver,
+      }),
+    });
+  }
   return (
     <ThemedView style={styles.container}>
       <ThemedText
@@ -12,7 +23,17 @@ export default function Index() {
       >
         Анкета для друзей
       </ThemedText>
-      <View>
+
+      <ThemedText>sender</ThemedText>
+      <ThemedText>{sender.username}</ThemedText>
+      <ThemedText>receiver</ThemedText>
+      <ThemedText>{receiver.username}</ThemedText>
+      <Button
+        title="нажми"
+        onPress={onPress}
+      />
+
+      {/* <View>
         <Link href="/classic" asChild>
           <Pressable>
             <ThemedText
@@ -22,7 +43,7 @@ export default function Index() {
             </ThemedText>
           </Pressable>
         </Link>
-      </View>
+      </View> */}
     </ThemedView>
   );
 }

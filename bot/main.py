@@ -93,6 +93,43 @@ def handle_hello(message):
       reply_markup=reply_markup
     )
 
+# Обработчик данных из Mini App
+@bot.message_handler(content_types=['web_app_data'])
+def handle_web_app_data(message):
+  """Обработка данных, отправленных из Mini App"""
+  web_app_data = message.web_app_data
+  
+  # Получаем данные
+  data_str = web_app_data.data
+  button_text = web_app_data.button_text
+  
+  print(f"Получены данные из Mini App:")
+  print(f"Текст кнопки: {button_text}")
+  print(f"Данные: {data_str}")
+    
+  try:
+    # Парсим JSON данные
+    data = json.loads(data_str)
+    
+    # Обрабатываем данные
+    process_web_app_data(message, data, button_text)
+      
+  except json.JSONDecodeError as e:
+    bot.reply_to(message, "❌ Ошибка обработки данных из приложения")
+    print(f"JSON decode error: {e}")
+
+def process_web_app_data(message, data, button_text):
+    """Обработка данных из Mini App"""
+    
+    text = (
+      f"Поздравляю, {data.sender.first_name}\n"
+      f"Пользователь, {data.receiver.first_name} заполнил Анкету!"
+    )
+    bot.send_message(
+      data.sender.id,
+      text,
+    )
+
 # Обработчик кнопки "Помощь"
 @bot.message_handler(func=lambda message: message.text == 'ℹ️ Помощь')
 def handle_help_button(message):
