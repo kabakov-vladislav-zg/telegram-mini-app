@@ -1,5 +1,5 @@
+import { emitEvent, isTMA, mockTelegramEnv } from '@telegram-apps/bridge';
 import { init } from '@telegram-apps/sdk-react';
-import { isTMA, mockTelegramEnv, emitEvent } from '@telegram-apps/bridge';
 
 let isAppInitialized = false;
 
@@ -35,6 +35,8 @@ export function initApp() {
     } as const;
     mockTelegramEnv({
       launchParams: {
+        // @ts-expect-error
+        startattach: 'eyJpZCI6MTQ3NDU3MzQ2MiwiaXNfYm90IjpmYWxzZSwiZmlyc3RfbmFtZSI6Ilx1MDQxMlx1MDQzYlx1MDQzMFx1MDQzNFx1MDQzOFx1MDQ0MVx1MDQzYlx1MDQzMFx1MDQzMiIsImxhc3RfbmFtZSI6bnVsbCwidXNlcm5hbWUiOiJWbGFkaXNsYXZfS2FiYWtvdiIsImxhbmd1YWdlX2NvZGUiOiJydSJ9',
         tgWebAppThemeParams: themeParams,
         tgWebAppData: new URLSearchParams([
           ['user', JSON.stringify({

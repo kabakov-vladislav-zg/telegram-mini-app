@@ -8,21 +8,20 @@ interface TgStartParam {
 }
 
 function decodeBase64Url<T extends object>(encodedStr: string): T {
-  console.log('encodedStr\n', encodedStr)
   let padding = encodedStr.length % 4;
   if (padding !== 0) {
       encodedStr += '='.repeat(4 - padding);
   }
   const base64 = encodedStr.replace(/-/g, '+').replace(/_/g, '/');
   const jsonStr = atob(base64);
-  console.log('jsonStr\n', jsonStr)
-  console.log('startattach\n', JSON.parse(jsonStr))
   return JSON.parse(jsonStr);
 }
 
-export function useTgStartParam() {
+export function useTgUser() {
   console.log('retrieveLaunchParams\n', retrieveLaunchParams(true))
-  const { startattach } = retrieveLaunchParams(true);
-
-  return decodeBase64Url<TgStartParam>(startattach as string)
+  const launchParams = retrieveLaunchParams(true);
+  const receiver = launchParams.tgWebAppData!.user!;
+  const startattach = launchParams.startattach as string;
+  const sender = decodeBase64Url<TgStartParam>(startattach);
+  return { sender, receiver };
 }
