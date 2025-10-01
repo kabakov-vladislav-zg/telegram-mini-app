@@ -1,31 +1,28 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTgUser } from '@/hooks/telegram/use-user';
-import { supports } from '@telegram-apps/bridge';
+import { invokeCustomMethod } from '@telegram-apps/bridge';
 import { Button, StyleSheet } from 'react-native';
 
 export default function Index() {
   const { sender, receiver } = useTgUser()
 
   function onPress() {
-    supports('web_app_data_send', '9.1');
-    console.log('supports\n', supports('web_app_data_send', '9.1'))
-    window.TelegramWebviewProxy.invokeCustomMethod(
+    invokeCustomMethod(
       'send_message_to_user',
       {
         sender,
         receiver, 
         message: 'test'
       },
-      (error, result) => {
-        if (error) {
-          alert('Ошибка отправки');
-        } else {
-          alert('Сообщение отправлено!');
-          window.TelegramWebviewProxy.close();
-        }
+      'ABC'
+    ).then((error, result) => {
+      if (error) {
+        alert('Ошибка отправки');
+      } else {
+        alert('Сообщение отправлено!');
       }
-    );
+    });
   }
   return (
     <ThemedView style={styles.container}>

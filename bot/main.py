@@ -209,6 +209,7 @@ def handle_other_messages(message):
         reply_markup=create_main_keyboard()
     )
 
+
 def start_bot():
   """Запуск бота в отдельном потоке"""
   logging.info("Starting Telegram bot...")
@@ -217,21 +218,5 @@ def start_bot():
   except Exception as e:
     logging.error(f"Bot polling error: {e}")
 
-def start_flask():
-  """Запуск Flask приложения"""
-  logging.info("Starting Flask application...")
-  app.run(
-    host='0.0.0.0', 
-    port=5000, 
-    debug=False,
-    use_reloader=False  # Важно! Иначе будет 2 процесса
-  )
-
 if __name__ == '__main__':
-    # Запускаем бота в отдельном потоке
-    bot_thread = threading.Thread(target=start_bot)
-    bot_thread.daemon = True
-    bot_thread.start()
-    
-    # Запускаем Flask в основном потоке
-    start_flask()
+  start_bot()
