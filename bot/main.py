@@ -92,6 +92,10 @@ def handle_hello(message):
       text,
       reply_markup=reply_markup
     )
+    
+@bot.message_handler(content_types=['text', 'web_app_data', 'document', 'photo'])
+def handle_all_content(message):
+    print(f"Received content type: {message.content_type}")
 
 # Обработчик данных из Mini App
 @bot.message_handler(content_types=['web_app_data'])

@@ -1,14 +1,16 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTgUser } from '@/hooks/telegram/use-user';
-import { postEvent } from '@telegram-apps/bridge';
+import { supports } from '@telegram-apps/bridge';
 import { Button, StyleSheet } from 'react-native';
 
 export default function Index() {
   const { sender, receiver } = useTgUser()
 
   function onPress() {
-    postEvent('web_app_data_send', {
+    supports('web_app_data_send', '9.1');
+    console.log('supports\n', supports('web_app_data_send', '9.1'))
+    window.TelegramWebviewProxy.postEvent('web_app_data_send', {
       data: JSON.stringify({
         sender,
         receiver,

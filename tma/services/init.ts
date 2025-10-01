@@ -1,4 +1,4 @@
-import { emitEvent, isTMA, mockTelegramEnv } from '@telegram-apps/bridge';
+import { emitEvent, isTMA, mockTelegramEnv, on } from '@telegram-apps/bridge';
 import { init } from '@telegram-apps/sdk';
 
 let isAppInitialized = false;
@@ -80,5 +80,9 @@ export function initApp() {
     });
   }
 
-  init()
+  init();
+  
+  on('*', event => {
+    console.log('event:\n', event);
+  });
 };
