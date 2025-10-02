@@ -4,17 +4,30 @@
 
 ## Структура проекта
 
-- `bot/` - Python бот без базы данных
-- `tma/` - React TMA приложение
-- `nginx/` - Конфигурация nginx
-- `docker-compose.yml` - Docker Compose конфигурация
-- `setup.sh` - Скрипт настройки сервера
-- `deploy.sh` - Скрипт деплоя
+- `bot/`
+- `api/`
+- `tma/` 
+- `docker-compose.yml`
+- `setup.sh`
+
+## Docker
+
+1. docker compose
+
+   ```bash
+   # Полная очистка Docker Compose окружения
+   docker compose down -v --rmi all
+
+   # Удаление неиспользуемых данных Docker
+   docker system prune -a -f --volumes
+
+   # Перезапуск tma
+   docker compose build --no-cache tma && docker compose up
+   ```
+
 
 ## Быстрый старт
 
 ### 1. Подготовка сервера
 
-```bash
-chmod +x setup.sh deploy.sh
 sudo ./setup.sh
