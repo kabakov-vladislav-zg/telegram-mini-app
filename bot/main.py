@@ -94,10 +94,6 @@ def handle_hello(message):
     parse_mode="MarkdownV2",
   )
 
-@bot.message_handler(content_types=['text', 'web_app_data', 'document', 'photo'])
-def handle_all_content(message):
-  print(f"Received content type: {message.content_type}")
-
 # Обработчик кнопки "Помощь"
 @bot.message_handler(func=lambda message: message.text == 'ℹ️ Помощь')
 def handle_help_button(message):
