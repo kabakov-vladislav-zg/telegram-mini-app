@@ -7,7 +7,7 @@ import logging
 import sys
 
 logging.basicConfig(
-  level=logging.error,
+  level=logging.ERROR,
   format='%(asctime)s - %(levelname)s - %(message)s',
   stream=sys.stdout
 )
