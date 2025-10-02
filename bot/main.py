@@ -5,109 +5,57 @@ import json
 import base64
 import logging
 import sys
-import requests
-from flask import Flask, request, jsonify
 
 logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    stream=sys.stdout
+  level=logging.error,
+  format='%(asctime)s - %(levelname)s - %(message)s',
+  stream=sys.stdout
 )
-app = Flask(__name__)
 
 # Создание экземпляра бота
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'))
 
-@app.route('/api/custom_web_app_data', methods=['POST'])
-def handle_custom_web_app_data():
-  """
-  Обработчик кастомных методов из TMA
-  """
-  try:
-    # Проверяем Content-Type
-    if not request.is_json:
-      return jsonify({'error': 'Content-Type must be application/json'}), 400
-    
-    data = request.get_json()
-    print(f"request.get_json(): {request.get_json()}")
-    
-    # Проверяем обязательные поля
-    if not data or 'method' not in data:
-      return jsonify({'error': 'Missing method name'}), 400
-    
-    method_name = data.get('method')
-    method_params = data.get('params', {})
-    
-    # Обрабатываем методы
-    if method_name == 'send_message_to_user':
-      return forward_message_to_bot(method_params)
-    elif method_name == 'ping':
-      return jsonify({'status': 'success', 'message': 'pong'})
-    else:
-      return jsonify({'error': 'Unknown method'}), 404
-        
-  except Exception as e:
-    return jsonify({'error': f'Server error: {str(e)}'}), 500
-  
-def forward_message_to_bot(params):
-    # Используем Telegram Bot API для отправки сообщения
-    bot_token = os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE')
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    
-    payload = {
-      'chat_id': params['sender']['id'],
-      'text': f"📨 Сообщение от пользователя:\n\n{params['message']}",
-      'parse_mode': 'HTML'
-    }
-    
-    response = requests.post(url, json=payload)
-    
-    if response.status_code == 200:
-      return {'status': 'success', 'message': 'Message sent'}
-    else:
-      return {'status': 'error', 'message': 'Failed to send'}
-
 # Создание клавиатуры
 def create_main_keyboard():
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(KeyboardButton('👋 Анкета'), KeyboardButton('ℹ️ Помощь'))
-    return keyboard
+  keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+  keyboard.add(KeyboardButton('👋 Анкета'), KeyboardButton('ℹ️ Помощь'))
+  return keyboard
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def handle_start(message):
-    user = message.from_user
-    welcome_text = (
-        f"Привет, {user.first_name}! 👋\n"
-        f"Я простой бот на pytelegrambotapi.\n"
-        f"Выбери действие на клавиатуре или отправь мне сообщение!"
-    )
-    
-    bot.send_message(
-        message.chat.id,
-        welcome_text,
-        reply_markup=create_main_keyboard()
-    )
+  user = message.from_user
+  welcome_text = (
+    f"Привет, {user.first_name}! 👋\n"
+    f"Я простой бот на pytelegrambotapi.\n"
+    f"Выбери действие на клавиатуре или отправь мне сообщение!"
+  )
+  
+  bot.send_message(
+    message.chat.id,
+    welcome_text,
+    reply_markup=create_main_keyboard()
+  )
 
 # Обработчик команды /help
 @bot.message_handler(commands=['help'])
 def handle_help(message):
-    help_text = """
-      🤖 *Доступные команды:*
+  help_text = """
+    🤖 *Доступные команды:*
 
-      */start* - Начать работу
-      */help* - Показать справку
+    */start* - Начать работу
+    */help* - Показать справку
 
-      *Кнопки:*
-      👋 *Привет* - Поприветствовать
-      ℹ️ *Помощь* - Показать эту справку
-    """
-    bot.send_message(
-        message.chat.id,
-        help_text,
-        parse_mode='Markdown',
-        reply_markup=create_main_keyboard()
-    )
+    *Кнопки:*
+    👋 *Привет* - Поприветствовать
+    ℹ️ *Помощь* - Показать эту справку
+  """
+  bot.send_message(
+    message.chat.id,
+    help_text,
+    parse_mode='Markdown',
+    reply_markup=create_main_keyboard()
+  )
 
 def encode_compact(data_dict):  
   json_str = json.dumps(data_dict, separators=(',', ':'))
@@ -123,97 +71,50 @@ def encode_compact(data_dict):
 # Обработчик кнопки "Анкета"
 @bot.message_handler(func=lambda message: message.text == '👋 Анкета')
 def handle_hello(message):
-    app_url = "https://vladiksfriendsprofilebot.webtm.ru"
-    user = message.from_user
-    chat = message.chat
-    attach_data = {
-      'id': user.id,
-      'is_bot': user.is_bot,
-      'first_name': user.first_name,
-      'last_name': user.last_name,
-      'username': user.username,
-      'language_code': user.language_code
-    }
-    attach_string = encode_compact(attach_data)
-    url = f"{app_url}?startattach={attach_string}"
-    text = (
-      f"👋 Привет"
-      f"Заполни анкету друга для {user.first_name}"
-      f"https://t.me/vladiks_friends_profile_bot?startapp={attach_string}"
-    )
+  user = message.from_user
+  chat = message.chat
+  attach_data = {
+    'id': user.id,
+    'is_bot': user.is_bot,
+    'first_name': user.first_name,
+    'last_name': user.last_name,
+    'username': user.username,
+    'language_code': user.language_code
+  }
+  attach_string = encode_compact(attach_data)
+  text = (
+    f"👋 Привет\n"
+    f"Заполни анкету друга для {user.first_name}\n\n"
+    f"[Заполнить анкету](https://t.me/vladiks_friends_profile_bot?startapp={attach_string})"
+  )
 
-    keyboard = [[InlineKeyboardButton(
-      "Анкета",
-      web_app=WebAppInfo(url=url))
-    ]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    bot.send_message(
-      chat.id,
-      text,
-      reply_markup=reply_markup
-    )
+  bot.send_message(
+    chat.id,
+    text,
+    parse_mode="MarkdownV2",
+  )
 
 @bot.message_handler(content_types=['text', 'web_app_data', 'document', 'photo'])
 def handle_all_content(message):
-    print(f"Received content type: {message.content_type}")
-
-# Обработчик данных из Mini App
-@bot.message_handler(content_types="web_app_data")
-def handle_web_app_data(message):
-  """Обработка данных, отправленных из Mini App"""
-  web_app_data = message.web_app_data
-  
-  # Получаем данные
-  data_str = web_app_data.data
-  button_text = web_app_data.button_text
-  
-  print(f"Получены данные из Mini App:")
-  print(f"Текст кнопки: {button_text}")
-  print(f"Данные: {data_str}")
-    
-  try:
-    # Парсим JSON данные
-    data = json.loads(data_str)
-    
-    # Обрабатываем данные
-    process_web_app_data(message, data, button_text)
-      
-  except json.JSONDecodeError as e:
-    bot.reply_to(message, "❌ Ошибка обработки данных из приложения")
-    print(f"JSON decode error: {e}")
-
-def process_web_app_data(message, data, button_text):
-    """Обработка данных из Mini App"""
-    
-    text = (
-      f"Поздравляю, {data.sender.first_name}\n"
-      f"Пользователь, {data.receiver.first_name} заполнил Анкету!"
-    )
-    bot.send_message(
-      data.sender.id,
-      text,
-    )
+  print(f"Received content type: {message.content_type}")
 
 # Обработчик кнопки "Помощь"
 @bot.message_handler(func=lambda message: message.text == 'ℹ️ Помощь')
 def handle_help_button(message):
-    handle_help(message)
+  handle_help(message)
 
     
 # Обработчик всех остальных типов сообщений
 @bot.message_handler(content_types=['photo', 'document', 'sticker', 'voice'])
 def handle_other_messages(message):
-    bot.send_message(
-        message.chat.id,
-        "Круто! Но я пока умею работать только с текстом 📝",
-        reply_markup=create_main_keyboard()
-    )
+  bot.send_message(
+    message.chat.id,
+    "Круто! Но я пока умею работать только с текстом 📝",
+    reply_markup=create_main_keyboard()
+  )
 
 
 def start_bot():
-  """Запуск бота в отдельном потоке"""
-  logging.info("Starting Telegram bot...")
   try:
     bot.infinity_polling(timeout=60, long_polling_timeout=60)
   except Exception as e:

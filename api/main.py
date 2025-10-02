@@ -5,7 +5,7 @@ import logging
 import sys
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.error,
     format='%(asctime)s - %(levelname)s - %(message)s',
     stream=sys.stdout
 )
@@ -16,11 +16,8 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 @app.route('/api/custom_method', methods=['POST'])
 def handle_custom_method():
-    """Обработчик кастомных методов из TMA"""
     try:
-        data = request.get_json()
-        logger.info(f"📨 Received API request: {data}")
-        
+        data = request.get_json()        
         if not data or 'method' not in data:
             return jsonify({'error': 'Missing method name'}), 400
         
@@ -39,63 +36,51 @@ def handle_custom_method():
             return jsonify({'error': 'Unknown method'}), 404
             
     except Exception as e:
-        logger.error(f"💥 Server error: {e}")
         return jsonify({'error': str(e)}), 500
 
 def send_message_to_user(params):
-    """Отправка сообщения через Telegram Bot API"""
     try:
-        sender = params.get('sender', {})
-        receiver = params.get('receiver', {})
-        message = params.get('message', '')
-        sender_username = sender.get('username', 'Неизвестный отправитель')
-        receiver_username = receiver.get('username', 'Неизвестный получатель')
-        sender_id = sender.get('id')
+      sender = params.get('sender', {})
+      receiver = params.get('receiver', {})
+      message = params.get('message', '')
+      sender_username = sender.get('username', 'Неизвестный отправитель')
+      receiver_username = receiver.get('username', 'Неизвестный получатель')
+      sender_id = sender.get('id')
 
-        # Формируем текст сообщения
-        text = f"📨 Сообщение от {sender_username} для {receiver_username}:\n\n{message}"
-        
-        # Отправляем через Telegram Bot API
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-        payload = {
-          'chat_id': sender_id,
-          'text': text,
-          'parse_mode': 'HTML'
-        }
-        
-        response = requests.post(url, json=payload, timeout=10)
-        
-        if response.status_code == 200:
-            logger.info("✅ Message sent successfully")
-            return jsonify({
-                'status': 'success', 
-                'message': 'Message sent successfully'
-            })
-        else:
-            error_msg = response.json().get('description', 'Unknown error')
-            logger.error(f"❌ Telegram API error: {error_msg}")
-            return jsonify({
-                'status': 'error', 
-                'message': f'Telegram API error: {error_msg}'
-            }), 500
-            
+      text = f"📨 Сообщение от {sender_username} для {receiver_username}:\n\n{message}"
+      url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+      payload = {
+        'chat_id': sender_id,
+        'text': text,
+        'parse_mode': 'HTML'
+      }
+      response = requests.post(url, json=payload, timeout=10)
+      
+      if response.status_code == 200:
+        return jsonify({
+          'status': 'success', 
+          'message': 'Message sent successfully'
+        })
+      else:
+        error_msg = response.json().get('description', 'Unknown error')
+        return jsonify({
+          'status': 'error', 
+          'message': f'Telegram API error: {error_msg}'
+        }), 500
+          
     except Exception as e:
-        logger.error(f"❌ Send message error: {e}")
-        return jsonify({'error': str(e)}), 500
+      return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    """Проверка здоровья API"""
-    return jsonify({
-        'status': 'healthy', 
-        'service': 'TMA API',
-        'bot_token_set': bool(BOT_TOKEN)
-    })
-
-@app.route('/')
-def index():
-    return jsonify({'message': 'Flask API is running'})
+  return jsonify({
+    'status': 'healthy', 
+    'service': 'API',
+  })
 
 if __name__ == '__main__':
-    logger.info("🚀 Starting Flask API on 0.0.0.0:5000")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+  app.run(
+    host='0.0.0.0',
+    port=5000,
+    debug=False
+  )
