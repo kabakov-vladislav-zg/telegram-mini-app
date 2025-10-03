@@ -3,7 +3,9 @@ import requests
 import os
 import logging
 import sys
+from pydantic import BaseModel, ValidationError
 from models.profile import Profile
+from typing import Dict, Any
 
 logging.basicConfig(
   level=logging.ERROR,
@@ -16,34 +18,45 @@ app = Flask(__name__)
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 TG_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
+
+class SendProfileRequestModel(BaseModel):
+  ownerId: int
+  userId: int
+  userUsername: str
+  profile: Dict[str, Any]
+
 @app.route('/api/send_profile', methods=['POST'])
 def handle_send_profile():
   data = request.get_json()
-  if not data:
+  if not data or not isinstance(data, dict):
     return jsonify({
       'status': 'error', 
-      'error': 'No JSON data provided',
+      'error': 'Valid JSON object required',
+      'details': data,
     }), 400
 
-  required_fields = ['ownerId', 'userId', 'userUsername', 'profile']
-  missing_fields = [field for field in required_fields if not data.get(field)]
-  if missing_fields:
+  try:
+    SendProfileRequestModel(**data)
+    profile = data.get('profile')
+    profile=Profile(
+      user_id=data.get('userId'),
+      username=data.get('userUsername'),
+      name=profile.get('name'),
+      nickname=profile.get('nickname'),
+      birthday=profile.get('birthday'),
+      eyecolor=profile.get('eyecolor'),
+    )
+    return send_telegram_message(
+      data.get('ownerId'),
+      profile.to_text(),
+    )
+  
+  except ValidationError as e:
     return jsonify({
       'status': 'error', 
-      'error': f'Missing required fields: {", ".join(missing_fields)}',
-    }), 400
-
-  profile = data.get('profile')
-  profile=Profile(
-    userId=data.get('userId'),
-    username=data.get('userUsername'),
-    name=profile.get('name'),
-    nickname=profile.get('nickname'),
-    birthday=profile.get('birthday'),
-    eyecolor=profile.get('eyecolor'),
-  )
-
-  return send_telegram_message(data.get('ownerId'), profile.to_text())
+      'error': 'Validation failed',
+      'details': e.errors()
+    }), 422
 
 
 def send_telegram_message(chat_id: str, text: str, parse_mode: str = 'HTML') -> bool:
@@ -65,19 +78,19 @@ def send_telegram_message(chat_id: str, text: str, parse_mode: str = 'HTML') -> 
     return jsonify({
       'status': 'error', 
       'error': f'Telegram API error: {error_msg}',
-      'data': payload,
-    }), 500
+      'details': payload,
+    }), 400
       
   except requests.exceptions.RequestException as e:
     return jsonify({
       'status': 'error', 
-      'error': f'Network error: {str(e)}',
+      'error': 'Network error',
     }), 503
       
   except Exception as e:
     return jsonify({
       'status': 'error', 
-      'error': f'Unknown error: {str(e)}',
+      'error': 'Unknown error',
     }), 500
 
 @app.route('/health', methods=['GET'])

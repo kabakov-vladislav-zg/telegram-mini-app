@@ -1,6 +1,6 @@
 class Profile:
-  def __init__(self, userId="", username="", name="", nickname="", birthday="", eyecolor=""):
-    self.userId = userId
+  def __init__(self, user_id: int, username: str, name: str, nickname: str, birthday: str, eyecolor: str):
+    self.user_id = user_id
     self.username = username
     self.name = name
     self.nickname = nickname
