@@ -3,7 +3,7 @@ import requests
 import os
 import logging
 import sys
-from .models.profile import Profile
+from models.profile import Profile
 
 logging.basicConfig(
   level=logging.ERROR,
