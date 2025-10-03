@@ -17,64 +17,68 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 TG_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
 @app.route('/api/send_profile', methods=['POST'])
-def handle_custom_method():
-  try:
-    data = request.get_json()        
-    return send_profile(data)         
-  except Exception as e:
-    return jsonify({'error': str(e)}), 500
+def handle_send_profile():
+  data = request.get_json()
+  if not data:
+    return jsonify({
+      'status': 'error', 
+      'error': 'No JSON data provided',
+    }), 400
 
-def send_profile(data):
-  try:
-    ownerId = data.get('ownerId')
-    ownerName = data.get('ownerName')
-    userId = data.get('userId')
-    userName = data.get('userName')
-    userUsername = data.get('userUsername')
-    profile = data.get('profile')
+  required_fields = ['ownerId', 'userId', 'userUsername', 'profile']
+  missing_fields = [field for field in required_fields if not data.get(field)]
+  if missing_fields:
+    return jsonify({
+      'status': 'error', 
+      'error': f'Missing required fields: {", ".join(missing_fields)}',
+    }), 400
 
-    profile=Profile(
-      telegram=userUsername,
-      name=profile.get('name'),
-      nickname=profile.get('nickname'),
-      birthday=profile.get('birthday'),
-      eyecolor=profile.get('eyecolor'),
-    )
-    payloadProfile = {
-      'chat_id': ownerId,
-      'text': profile.to_text(),
-      'parse_mode': 'HTML'
+  profile = data.get('profile')
+  profile=Profile(
+    userId=data.get('userId'),
+    username=data.get('userUsername'),
+    name=profile.get('name'),
+    nickname=profile.get('nickname'),
+    birthday=profile.get('birthday'),
+    eyecolor=profile.get('eyecolor'),
+  )
+
+  return send_telegram_message(data.get('ownerId'), profile.to_text())
+
+
+def send_telegram_message(chat_id: str, text: str, parse_mode: str = 'HTML') -> bool:
+  try:
+    payload = {
+      'chat_id': chat_id,
+      'text': text,
+      'parse_mode': parse_mode
     }
-    response1 = requests.post(TG_URL, json=payloadProfile, timeout=10)
-    
-    if response1.status_code == 200:
-      payloadSuccess = {
-        'chat_id': userId,
-        'text': 'Анкета доставлена!',
-        'parse_mode': 'HTML'
-      }
-      response2 = requests.post(TG_URL, json=payloadSuccess, timeout=10)
-
-      if response2.status_code == 200:
-        return jsonify({
-          'status': 'success', 
-          'message': 'Message sent successfully',
-        })
-      else:
-        error_msg2 = response2.json().get('description', 'Unknown error')
-        return jsonify({
-          'status': 'success', 
-          'message': f'Message sent successfully, but: {error_msg2}',
-        })
-    else:
-      error_msg1 = response1.json().get('description', 'Unknown error')
-      return jsonify({
-        'status': 'error', 
-        'message': f'Telegram API error: {error_msg1}',
-      }), 500
-        
+    response = requests.post(TG_URL, json=payload, timeout=10)
+    response.raise_for_status()
+    return jsonify({
+      'status': 'success', 
+      'message': 'Message sent successfully',
+    })
+  
+  except requests.exceptions.HTTPError as e:
+    error_msg = e.response.json().get('description', 'Unknown Telegram error')
+    return jsonify({
+      'status': 'error', 
+      'error': f'Telegram API error: {error_msg}',
+      'data': payload,
+    }), 500
+      
+  except requests.exceptions.RequestException as e:
+    return jsonify({
+      'status': 'error', 
+      'error': f'Network error: {str(e)}',
+    }), 503
+      
   except Exception as e:
-    return jsonify({'error': str(e)}), 500
+    return jsonify({
+      'status': 'error', 
+      'error': f'Unknown error: {str(e)}',
+    }), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():

@@ -16,7 +16,7 @@
     profile: object,
   }) {
     try {
-      await axios.post('/api/send_profile', {
+      await axios.post('https://vladiksfriendsprofilebot.webtm.ru/api/send_profile', {
         ownerId,
         ownerName,
         userId,

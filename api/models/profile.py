@@ -1,6 +1,7 @@
 class Profile:
-  def __init__(self, telegram="", name="", nickname="", birthday="", eyecolor=""):
-    self.telegram = telegram
+  def __init__(self, userId="", username="", name="", nickname="", birthday="", eyecolor=""):
+    self.userId = userId
+    self.username = username
     self.name = name
     self.nickname = nickname
     self.birthday = birthday
@@ -8,7 +9,7 @@ class Profile:
   def to_text(self):
     text=(
       f"<b>АНКЕТА</b>\n"
-      f"<b>tg:</b> <a href=\"https://t.me/{self.telegram}\">{self.telegram}</a>\n"
+      f"<b>tg:</b> <a href=\"https://t.me/{self.username}\">{self.username}</a>\n"
       f"═══════════════════════════════════════\n"
     )
     if self.name:
