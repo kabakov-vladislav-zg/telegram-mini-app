@@ -23,6 +23,13 @@
 
    # Перезапуск tma
    docker compose build --no-cache tma && docker compose up
+
+   # Перезапуск api/bot
+   docker compose build api && docker compose up
+   docker compose build bot && docker compose up
+
+   # Перезапуск всего
+   docker compose build api && docker compose build bot && docker compose build --no-cache tma && docker compose up
    ```
 
 

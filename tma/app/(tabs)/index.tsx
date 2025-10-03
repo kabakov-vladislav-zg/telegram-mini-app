@@ -26,23 +26,14 @@ export default function Index() {
         </ThemedText>
       </View>
       <View style={styles.section}>
-        <View>
-          <Link href="/profile" asChild>
-              <Button
-                title='Заполнить анкету'
-              />
-          </Link>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <View>
-          <Link href="/profile" asChild>
-              <Button
-                title='Оставить секретную записку'
-              />
-          </Link>
-        </View>
+        <ThemedText type='defaultSemiBold'>
+          Тут можно:
+        </ThemedText>
+        <Link href="/profile" asChild>
+          <Button
+            title='Заполнить анкету'
+          />
+        </Link>
       </View>
     </ThemedView>
   );

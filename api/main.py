@@ -14,16 +14,17 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+TG_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
 @app.route('/api/send_profile', methods=['POST'])
 def handle_custom_method():
   try:
     data = request.get_json()        
-    return send_message_to_user(data)         
+    return send_profile(data)         
   except Exception as e:
     return jsonify({'error': str(e)}), 500
 
-def send_message_to_user(data):
+def send_profile(data):
   try:
     ownerId = data.get('ownerId')
     ownerName = data.get('ownerName')
@@ -39,31 +40,37 @@ def send_message_to_user(data):
       birthday=profile.get('birthday'),
       eyecolor=profile.get('eyecolor'),
     )
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {
+    payloadProfile = {
       'chat_id': ownerId,
       'text': profile.to_text(),
       'parse_mode': 'HTML'
     }
-    response = requests.post(url, json=payload, timeout=10)
+    response1 = requests.post(TG_URL, json=payloadProfile, timeout=10)
     
-    if response.status_code == 200:
-      payload = {
+    if response1.status_code == 200:
+      payloadSuccess = {
         'chat_id': userId,
         'text': 'Анкета доставлена!',
-        'parse_mode': 'MarkdownV2'
+        'parse_mode': 'HTML'
       }
-      requests.post(url, json=payload, timeout=10)
-      return jsonify({
-        'status': 'success', 
-        'message': 'Message sent successfully'
-      })
+      response2 = requests.post(TG_URL, json=payloadSuccess, timeout=10)
+
+      if response2.status_code == 200:
+        return jsonify({
+          'status': 'success', 
+          'message': 'Message sent successfully',
+        })
+      else:
+        error_msg2 = response2.json().get('description', 'Unknown error')
+        return jsonify({
+          'status': 'success', 
+          'message': f'Message sent successfully, but: {error_msg2}',
+        })
     else:
-      error_msg = response.json().get('description', 'Unknown error')
+      error_msg1 = response1.json().get('description', 'Unknown error')
       return jsonify({
         'status': 'error', 
-        'message': f'Telegram API error: {error_msg}',
-        'data': payload,
+        'message': f'Telegram API error: {error_msg1}',
       }), 500
         
   except Exception as e:

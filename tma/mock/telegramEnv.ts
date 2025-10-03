@@ -38,7 +38,7 @@ const tgWebAppData = [
     language_code: 'ru',
     photo_url: '',
   })],
-  ['startParam', 'eyJpZCI6MTQ3NDU3MzQ2MiwiaXNfYm90IjpmYWxzZSwiZmlyc3RfbmFtZSI6Ilx1MDQxMlx1MDQzYlx1MDQzMFx1MDQzNFx1MDQzOFx1MDQ0MVx1MDQzYlx1MDQzMFx1MDQzMiIsImxhc3RfbmFtZSI6bnVsbCwidXNlcm5hbWUiOiJWbGFkaXNsYXZfS2FiYWtvdiIsImxhbmd1YWdlX2NvZGUiOiJydSJ9'],
+  ['startParam', 'eyJpZCI6MTQ3NDU3MzQ2MiwiZmlyc3ROYW1lIjoiXHUwNDEyXHUwNDNiXHUwNDMwXHUwNDM0XHUwNDM4XHUwNDQxXHUwNDNiXHUwNDMwXHUwNDMyIiwibGFzdE5hbWUiOm51bGwsInVzZXJuYW1lIjoiVmxhZGlzbGF2X0thYmFrb3YifQ'],
   ['hash', ''],
   ['signature', ''],
   ['auth_date', Date.now().toString()],
