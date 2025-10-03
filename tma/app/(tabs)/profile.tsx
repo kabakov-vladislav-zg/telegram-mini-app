@@ -40,7 +40,7 @@ export default function Index() {
         />
       )}
       <Button
-        title='Оставить секретную записку'
+        title='Отправить анкету'
         disabled={pending}
         onPress={onSubmit}
       />

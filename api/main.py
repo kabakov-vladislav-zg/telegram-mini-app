@@ -62,7 +62,8 @@ def send_message_to_user(data):
       error_msg = response.json().get('description', 'Unknown error')
       return jsonify({
         'status': 'error', 
-        'message': f'Telegram API error: {error_msg}'
+        'message': f'Telegram API error: {error_msg}',
+        'data': payload,
       }), 500
         
   except Exception as e:
