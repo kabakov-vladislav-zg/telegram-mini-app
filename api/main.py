@@ -3,6 +3,7 @@ import requests
 import os
 import logging
 import sys
+from .models.profile import Profile
 
 logging.basicConfig(
   level=logging.ERROR,
@@ -14,49 +15,45 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-@app.route('/api/custom_method', methods=['POST'])
+@app.route('/api/send_profile', methods=['POST'])
 def handle_custom_method():
   try:
     data = request.get_json()        
-    if not data or 'method' not in data:
-      return jsonify({'error': 'Missing method name'}), 400
-    
-    method_name = data.get('method')
-    params = data.get('params', {})
-    
-    logger.info(f"🔧 Processing method: {method_name}")
-    logger.info(f"📋 Params: {params}")
-    
-    if method_name == 'send_message_to_user':
-      return send_message_to_user(params)
-    elif method_name == 'ping':
-      return jsonify({'status': 'success', 'message': 'pong'})
-    else:
-      logger.error(f"❌ Unknown method: {method_name}")
-      return jsonify({'error': 'Unknown method'}), 404
-          
+    send_message_to_user(data)         
   except Exception as e:
     return jsonify({'error': str(e)}), 500
 
-def send_message_to_user(params):
+def send_message_to_user(data):
   try:
-    sender = params.get('sender', {})
-    receiver = params.get('receiver', {})
-    message = params.get('message', '')
-    sender_username = sender.get('username', 'Неизвестный отправитель')
-    receiver_username = receiver.get('username', 'Неизвестный получатель')
-    sender_id = sender.get('id')
+    ownerId = data.get('ownerId')
+    ownerName = data.get('ownerName')
+    userId = data.get('userId')
+    userName = data.get('userName')
+    userUsername = data.get('userUsername')
+    profile = data.get('profile')
 
-    text = f"📨 Сообщение от {sender_username} для {receiver_username}:\n\n{message}"
+    profile=Profile(
+      telegram=userUsername,
+      name=profile.get('name'),
+      nickname=profile.get('nickname'),
+      birthday=profile.get('birthday'),
+      eyecolor=profile.get('eyecolor'),
+    )
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
-      'chat_id': sender_id,
-      'text': text,
-      'parse_mode': 'HTML'
+      'chat_id': ownerId,
+      'text': profile.to_text(),
+      'parse_mode': 'MarkdownV2'
     }
     response = requests.post(url, json=payload, timeout=10)
     
     if response.status_code == 200:
+      payload = {
+        'chat_id': userId,
+        'text': 'Анкета доставлена!',
+        'parse_mode': 'MarkdownV2'
+      }
+      response = requests.post(url, json=payload, timeout=10)
       return jsonify({
         'status': 'success', 
         'message': 'Message sent successfully'

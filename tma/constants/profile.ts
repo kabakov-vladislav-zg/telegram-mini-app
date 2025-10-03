@@ -1,6 +1,11 @@
-import { ProfileQuestion } from ".";
+export type ProfileQuestion = {
+  id: string,
+  title: string,
+  type: string,
+  variants?: string[],
+}
 
-export const ProfileClassic: ProfileQuestion[] = [
+export const ProfileQuestions: ProfileQuestion[] = [
   {
     id: 'name',
     title: 'Имя',

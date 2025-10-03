@@ -3,8 +3,8 @@ import { retrieveLaunchParams } from '@telegram-apps/bridge';
 interface TgStartParam {
   id: number
   username: string
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
 }
 
 function decodeBase64Url<T extends object>(encodedStr: string): T {

@@ -27,7 +27,7 @@ export default function Index() {
       </View>
       <View style={styles.section}>
         <View>
-          <Link href="/classic" asChild>
+          <Link href="/profile" asChild>
               <Button
                 title='Заполнить анкету'
               />
@@ -37,7 +37,7 @@ export default function Index() {
 
       <View style={styles.section}>
         <View>
-          <Link href="/classic" asChild>
+          <Link href="/profile" asChild>
               <Button
                 title='Оставить секретную записку'
               />

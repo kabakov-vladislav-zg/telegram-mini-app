@@ -75,11 +75,9 @@ def handle_hello(message):
   chat = message.chat
   attach_data = {
     'id': user.id,
-    'is_bot': user.is_bot,
-    'first_name': user.first_name,
-    'last_name': user.last_name,
+    'firstName': user.first_name,
+    'lastName': user.last_name,
     'username': user.username,
-    'language_code': user.language_code
   }
   attach_string = encode_compact(attach_data)
   text = (
