@@ -1,27 +1,11 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTgUser } from '@/hooks/telegram/use-user';
-import axios from 'axios';
-import { Button, StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
+import { Button, StyleSheet, View } from 'react-native';
 
 export default function Index() {
-  const { sender, receiver } = useTgUser()
-
-  async function onPress() {
-    try {
-      await axios.post('/api/custom_method', {
-        method: 'send_message_to_user',
-        params: {
-          sender,
-          receiver, 
-          message: 'test'
-        }
-      });
-    } catch (error) {
-      console.error('❌ Error:', error.response?.data || error.message);
-      throw error;
-    }
-  }
+  const { owner } = useTgUser()
   return (
     <ThemedView style={styles.container}>
       <ThemedText
@@ -30,27 +14,36 @@ export default function Index() {
       >
         Анкета для друзей
       </ThemedText>
+      <View style={styles.section}>
+        <ThemedText type='defaultSemiBold'>
+          Обо мне:
+        </ThemedText>
+        <ThemedText>
+          Имя: { owner.first_name }
+        </ThemedText>
+        <ThemedText>
+          Ник: { owner.username }
+        </ThemedText>
+      </View>
+      <View style={styles.section}>
+        <View>
+          <Link href="/classic" asChild>
+              <Button
+                title='Заполнить анкету'
+              />
+          </Link>
+        </View>
+      </View>
 
-      <ThemedText>sender</ThemedText>
-      <ThemedText>{sender.username}</ThemedText>
-      <ThemedText>receiver</ThemedText>
-      <ThemedText>{receiver.username}</ThemedText>
-      <Button
-        title="нажми"
-        onPress={onPress}
-      />
-
-      {/* <View>
-        <Link href="/classic" asChild>
-          <Pressable>
-            <ThemedText
-              type='subtitle'
-            >
-              Классическая анкета
-            </ThemedText>
-          </Pressable>
-        </Link>
-      </View> */}
+      <View style={styles.section}>
+        <View>
+          <Link href="/classic" asChild>
+              <Button
+                title='Оставить секретную записку'
+              />
+          </Link>
+        </View>
+      </View>
     </ThemedView>
   );
 }
@@ -62,5 +55,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 12,
     gap: 24,
+  },
+  section: {
+    gap: 16,
   },
 });

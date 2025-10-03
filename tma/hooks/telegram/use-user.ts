@@ -18,10 +18,10 @@ function decodeBase64Url<T extends object>(encodedStr: string): T {
 }
 
 export function useTgUser() {
-  console.log('retrieveLaunchParams\n', retrieveLaunchParams(true))
   const launchParams = retrieveLaunchParams(true);
-  const receiver = launchParams.tgWebAppData!.user!;
+  console.log('launchParams\n', launchParams)
+  const user = launchParams.tgWebAppData!.user!;
   const startParam = launchParams.tgWebAppData!.startParam!;
-  const sender = decodeBase64Url<TgStartParam>(startParam);
-  return { sender, receiver };
+  const owner = decodeBase64Url<TgStartParam>(startParam);
+  return { user, owner };
 }

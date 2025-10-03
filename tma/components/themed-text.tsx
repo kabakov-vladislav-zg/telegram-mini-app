@@ -31,13 +31,15 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
-    lineHeight: 16,
+    fontSize: 14,
+    lineHeight: 14,
+    fontFamily: 'HachiMaruPop_400Regular',
   },
   defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 16,
+    fontSize: 14,
+    lineHeight: 14,
     fontWeight: '600',
+    fontFamily: 'HachiMaruPop_400Regular',
   },
   title: {
     fontSize: 24,
@@ -55,5 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16,
     color: '#0a7ea4',
+    fontFamily: 'HachiMaruPop_400Regular',
   },
 });

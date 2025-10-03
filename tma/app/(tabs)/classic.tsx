@@ -1,13 +1,18 @@
+import { sendProfile } from '@/api/sendProfile';
 import ProfileInput from '@/components/profile-input';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ProfileClassic } from '@/constants/profiles/classic';
+import { useTgUser } from '@/hooks/telegram/use-user';
+import { useApi } from '@/hooks/use-api';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 export default function Index() {
   const initForm = Object.fromEntries(ProfileClassic.map(({ id }) => [id, '']));
   const [form, setForm] = useState(initForm);
+  const { user, owner } = useTgUser()
+  const [pending, makeRequest] = useApi(sendProfile)
 
   function setField(key: string, value: string) {
     setForm(form => ({ ...form, [key]: value }));
