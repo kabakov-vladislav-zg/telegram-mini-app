@@ -5,7 +5,7 @@
 # COPY . .
 # RUN npm run build:web
 
-FROM alpine/git as build
+FROM alpine/git AS build
 WORKDIR /app
 ARG CACHE_BUST=1
 RUN git clone --depth 1 -b gh-pages https://github.com/kabakov-vladislav-zg/telegram-mini-app.git

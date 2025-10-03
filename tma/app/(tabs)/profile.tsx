@@ -23,7 +23,7 @@ export default function Index() {
       ownerName: owner.firstName,
       userId: user.id,
       userName: user.firstName,
-      userUsername: user.firstName,
+      userUsername: user.username!,
       profile: form,
     })
   }

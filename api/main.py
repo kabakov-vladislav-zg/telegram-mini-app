@@ -19,7 +19,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 def handle_custom_method():
   try:
     data = request.get_json()        
-    send_message_to_user(data)         
+    return send_message_to_user(data)         
   except Exception as e:
     return jsonify({'error': str(e)}), 500
 
@@ -53,7 +53,7 @@ def send_message_to_user(data):
         'text': 'Анкета доставлена!',
         'parse_mode': 'MarkdownV2'
       }
-      response = requests.post(url, json=payload, timeout=10)
+      requests.post(url, json=payload, timeout=10)
       return jsonify({
         'status': 'success', 
         'message': 'Message sent successfully'

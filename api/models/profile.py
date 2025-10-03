@@ -13,11 +13,11 @@ class Profile:
     )
     if self.name:
       text += f"Имя: {self.name}\n"
-    if self.name:
+    if self.nickname:
       text += f"Ник: {self.nickname}\n"
-    if self.name:
+    if self.birthday:
       text += f"День рождения: {self.birthday}\n"
-    if self.name:
+    if self.eyecolor:
       text += f"Цвет глаз: {self.eyecolor}\n"
 
     return text

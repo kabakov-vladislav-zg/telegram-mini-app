@@ -19,7 +19,7 @@ export default function Index() {
           Обо мне:
         </ThemedText>
         <ThemedText>
-          Имя: { owner.first_name }
+          Имя: { owner.firstName }
         </ThemedText>
         <ThemedText>
           Ник: { owner.username }
