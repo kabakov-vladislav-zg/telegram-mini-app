@@ -43,7 +43,7 @@ def send_message_to_user(data):
     payload = {
       'chat_id': ownerId,
       'text': profile.to_text(),
-      'parse_mode': 'MarkdownV2'
+      'parse_mode': 'HTML'
     }
     response = requests.post(url, json=payload, timeout=10)
     

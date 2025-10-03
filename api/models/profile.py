@@ -1,23 +1,23 @@
 class Profile:
   def __init__(self, telegram="", name="", nickname="", birthday="", eyecolor=""):
-    self.telegram = f"[{telegram}](https://t.me/{telegram})\n"
+    self.telegram = telegram
     self.name = name
     self.nickname = nickname
     self.birthday = birthday
     self.eyecolor = eyecolor
   def to_text(self):
     text=(
-      f"АНКЕТА\n"
-      f"tg: {self.telegram}\n"
-      f"═══════════════════════════════════════\n"
+      f"<b>АНКЕТА</b><br/>"
+      f"<b>tg:</b> <a href=\"https://t.me/{self.telegram}\">{self.telegram}</a><br/>"
+      f"═══════════════════════════════════════<br/>"
     )
     if self.name:
-      text += f"Имя: {self.name}\n"
+      text += f"<b>Имя:</b> {self.name}<br/>"
     if self.nickname:
-      text += f"Ник: {self.nickname}\n"
+      text += f"<b>Ник:</b> {self.nickname}<br/>"
     if self.birthday:
-      text += f"День рождения: {self.birthday}\n"
+      text += f"<b>День рождения:</b> {self.birthday}<br/>"
     if self.eyecolor:
-      text += f"Цвет глаз: {self.eyecolor}\n"
+      text += f"<b>Цвет глаз:</b> {self.eyecolor}<br/>"
 
     return text
